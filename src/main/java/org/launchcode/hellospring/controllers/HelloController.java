@@ -1,11 +1,13 @@
 package org.launchcode.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
-@ResponseBody
-@RequestMapping(value="hello")
 public class HelloController {
 
     // responds to /hello
@@ -54,29 +56,39 @@ public class HelloController {
 //        return "Hello, " + coder + "!";
 //    }
 
-    @GetMapping("{name}")
-    public String helloPathRedirect(@PathVariable String name) {
-        return "redirect:/" + name;
+//    @GetMapping("{name}")
+//    @ResponseBody
+//    public String helloPathRedirect(@PathVariable String name) {
+//        return "redirect:/" + name;
+//    }
+
+
+    @RequestMapping(value="hello", method = {RequestMethod.GET, RequestMethod.POST})
+    public String hello(@RequestParam String coder, Model model) {
+        String theGreeting = "Hello, " + coder + "!";
+        model.addAttribute("greeting", theGreeting);
+        return "hello";
     }
 
-
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
-    public String hello(@RequestParam String coder) {
-        return "Hello, " + coder + "!";
+    @GetMapping("hello/{name}")
+    public String helloPathRedirect(@PathVariable String name, Model model) {
+        model.addAttribute("greeting", "Hello, " + name + "!");
+        return "hello";
     }
 
     @GetMapping("form")
     public String helloForm() {
-        String html =
-                "<html>" +
-                        "<body>" +
-                        "<form method = 'post' action = '/hello'>" +
-                        "<input type = 'text' name = 'coder' />" +
-                        "<input type = 'submit' value = 'Greet Me!' />" +
-                        "</form>" +
-                        "</body>" +
-                        "</html>";
-        return html;
+        return "form";
+    }
+
+    @GetMapping("hello-names")
+    public String helloNames(Model model) {
+        List<String> names = new ArrayList<>();
+        names.add("LC");
+        names.add("Marcie");
+        names.add("Java");
+        model.addAttribute("names", names);
+        return "hello-list";
     }
 
 
